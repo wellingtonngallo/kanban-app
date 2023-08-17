@@ -25,5 +25,3 @@ jobs:
 
       - name: Build Vite App
         run: yarn build
-
-      - name: Deploy to Hosting
