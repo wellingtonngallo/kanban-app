@@ -8,6 +8,7 @@ module.exports = {
     "standard-with-typescript",
     "plugin:import/typescript",
     "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended",
   ],
   parser: "@typescript-eslint/parser",
   overrides: [],
@@ -20,6 +21,10 @@ module.exports = {
   rules: {
     "@typescript-eslint/triple-slash-reference": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/consistent-type-assertions": "off",
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
   },
   settings: {
     react: {
