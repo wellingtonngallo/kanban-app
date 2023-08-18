@@ -14,7 +14,8 @@ export const Login = (): JSX.Element => {
           w={"full"}
           variant={"outline"}
           leftIcon={<FcGoogle />}
-          onClick={handleGoogleSignIn}>
+          onClick={handleGoogleSignIn}
+        >
           <Center>
             <Text>Sign in with Google</Text>
           </Center>
