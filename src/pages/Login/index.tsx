@@ -1,4 +1,4 @@
-import { Button, Center, Stack, Text } from "@chakra-ui/react";
+import { Button, Center, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 
 import { FcGoogle } from "react-icons/fc";
@@ -8,7 +8,15 @@ export const Login = (): JSX.Element => {
   const { handleGoogleSignIn } = useAuth();
 
   return (
-    <Center p={8}>
+    <Flex
+      p={8}
+      alignItems="center"
+      justifyContent="center"
+      height="100%"
+      flexDir="column"
+      gap="1rem"
+    >
+      <Heading>Kanban APP</Heading>
       <Stack spacing={2} align={"center"} maxW={"md"} w={"full"}>
         <Button
           w={"full"}
@@ -17,10 +25,10 @@ export const Login = (): JSX.Element => {
           onClick={handleGoogleSignIn}
         >
           <Center>
-            <Text>Sign in with Google</Text>
+            <Text>Entrar com Google</Text>
           </Center>
         </Button>
       </Stack>
-    </Center>
+    </Flex>
   );
 };
