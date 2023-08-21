@@ -25,6 +25,7 @@ module.exports = {
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
+    "no-useless-return": "off",
   },
   settings: {
     react: {

@@ -1,27 +1,47 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Kanban APP
 
-Currently, two official plugins are available:
+## Rodando localmente
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Clone o projeto
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+  git clone https://github.com/wellingtonngallo/kanban-app
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Entre no diretório do projeto
+
+```bash
+  cd kanban-app
+```
+
+Instale as dependências
+
+```bash
+  yarn install
+```
+
+Inicie o servidor
+
+```bash
+  yarn dev
+```
+
+
+## Documentação
+
+#### Configuração do projeto
+- Para configuração do projeto, foi utilizado vite e toda sua configuração para rodar o projeto com react e typescript (https://vitejs.dev/)
+
+- Após a configuração com vite, foi iniciado a instalação de algumas dependencias tais como firebase, para que fosse realizado a autenticação via Google e a criação de um banco de dados com firebase store (https://firebase.google.com/?hl=pt)
+
+
+### Features
+- Autenticacão via Google utilizando o firebase auth
+- Consumo de apis utilizando o firebase store
+- DragAndDrop com react-dnd (https://react-dnd.github.io/react-dnd/about)
+- Guia de estilo utilizando ChakraUI (https://chakra-ui.com/docs/)
+- Biblioteca de icones utilizando react-icons (https://react-icons.github.io/react-icons/)
+- Controle de dados e formularios com react-hook-form (https://www.react-hook-form.com/)
+- Validação de formularios utilizando o yup (https://github.com/jquense/yup)
+- Github Actions e deploy automatico utilizando as configurações do firebase

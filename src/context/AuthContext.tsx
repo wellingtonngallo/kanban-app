@@ -14,6 +14,7 @@ import {
 import { setCookie, destroyCookie } from "nookies";
 import { auth } from "../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 
 type UserProps = {
   displayName: string | null;
@@ -34,6 +35,8 @@ export const AuthContext = createContext({} as AuthContextData);
 
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [user, setUser] = useState({} as UserProps);
+
+  const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,7 +72,15 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 
       navigate("/home");
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Falha ao autenticar",
+        description:
+          "Houve um erro ao tentar autenticar o usuário. Tente novamente",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 
