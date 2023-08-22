@@ -50,6 +50,7 @@ export const CardDetailsModal = ({
     handleSubmit,
     register,
     reset,
+    watch,
     formState: { isSubmitting },
   } = useForm<TasksRequest>();
   const closeModal = (): void => {
@@ -66,11 +67,12 @@ export const CardDetailsModal = ({
     try {
       const boardRef = doc(db, "tasks", taskId);
       const userRef = doc(db, "users", authorInfo.uid);
-
       const newData = {
         ...data,
         author: userRef,
       };
+
+      console.log(newData);
       await updateDoc(boardRef, newData);
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -129,18 +131,18 @@ export const CardDetailsModal = ({
               id="name"
               label="Título"
               {...register("name")}
-              isDisabled={isBlocked}
+              isDisabled={watch("isBlocked")}
             />
             <TextArea
               id="description"
               label="Descrição"
               {...register("description")}
-              isDisabled={isBlocked}
+              isDisabled={watch("isBlocked")}
             />
             {authorInfo.uid === user.uid && (
               <Flex>
                 <FormLabel htmlFor="blocked">Tarefa bloqueada</FormLabel>
-                <Switch id="blocked" {...register("blocked")} />
+                <Switch id="blocked" {...register("isBlocked")} />
               </Flex>
             )}
             <Flex

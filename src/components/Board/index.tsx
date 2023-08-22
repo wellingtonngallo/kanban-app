@@ -50,7 +50,7 @@ export const Board = ({
                   currentPositionBoardWhereTaskIs={boardIndex}
                   name={task.name}
                   author={task.author}
-                  isBlocked={task.blocked}
+                  isBlocked={task.isBlocked}
                   description={task.description}
                 />
               </Box>

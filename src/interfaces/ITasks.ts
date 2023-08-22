@@ -3,7 +3,7 @@ import { type DocumentReference } from "firebase/firestore";
 export type TasksRequest = {
   id: string;
   author: DocumentReference;
-  blocked: boolean;
+  isBlocked: boolean;
   description: string;
   name: string;
   index: number;

@@ -9,6 +9,7 @@ import { db } from "../../config/firebaseConfig";
 import { useBoard } from "../../hooks/useBoard";
 import { type BoardsRequest } from "../../interfaces/IBoard";
 import { type AuthorProps } from "../../interfaces/IAuthor";
+import { useAuth } from "../../hooks/useAuth";
 
 export const Task = ({
   taskId,
@@ -30,6 +31,7 @@ export const Task = ({
     authorInfo.uid,
   );
   const { setBoards } = useBoard();
+  const { user } = useAuth();
   const toast = useToast();
 
   const getInfoAuthor = useCallback(async (): Promise<void> => {
@@ -110,13 +112,19 @@ export const Task = ({
     <>
       <Tooltip
         label={
-          isBlocked ? "O item só pode ser movido ou alterado pelo autor" : ""
+          isBlocked && authorInfo.uid !== user.uid
+            ? "O item só pode ser movido ou alterado pelo autor"
+            : ""
         }
       >
         <Flex
           key={name}
           ref={ref}
-          opacity={isDragging || isBlocked ? "0.5" : ""}
+          opacity={
+            isDragging || (isBlocked && authorInfo.uid !== user.uid)
+              ? "0.5"
+              : ""
+          }
           cursor="grabbing"
           borderWidth="1px"
           borderRadius="lg"
@@ -145,7 +153,7 @@ export const Task = ({
                 aria-label="Deleta tarefa"
                 size="md"
                 icon={<MdEdit />}
-                isDisabled={isBlocked}
+                isDisabled={isBlocked && authorInfo.uid !== user.uid}
                 onClick={() => {
                   openModal();
                 }}
@@ -158,7 +166,7 @@ export const Task = ({
                 size="md"
                 icon={<MdDelete />}
                 isLoading={isLoading}
-                isDisabled={isBlocked}
+                isDisabled={isBlocked && authorInfo.uid !== user.uid}
                 onClick={() => {
                   removeTask(taskId);
                 }}
