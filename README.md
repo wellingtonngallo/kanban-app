@@ -65,7 +65,7 @@ Inicie o servidor
 
 - Editar tarefa - Para editar uma tarefa, é necessario estar autenticado, escolher a tarefa deve ser editada, e clicar no icone de editar no card de tarefas, ao abrir o modal deve alterar as informações da tarefa e salvar, a partir disso os dados são atualizados no firebase
 
-- Excluir tarefa Para excluir uma tarefa, é necessario estar autenticado, escolher o quadro em que a tarefa deve ser excluida, e clicar no botão de exclusão, a partir disso os dados são excluidos no firebase
+- Excluir tarefa -  Para excluir uma tarefa, é necessario estar autenticado, escolher o quadro em que a tarefa deve ser excluida, e clicar no botão de exclusão, a partir disso os dados são excluidos no firebase
   
 - Buscar tarefa - Ao abrir a tela, é realizada uma chamada pegando os quadros com as tarefas referenciadas em cada quadro, e salvo em um contexto ambos para que seja renderizado em tela
 
