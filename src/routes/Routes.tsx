@@ -29,7 +29,7 @@ export const AppRoutes = (): JSX.Element => {
     <Suspense fallback={<div>Carregando</div>}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<ProtectedRoutes />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

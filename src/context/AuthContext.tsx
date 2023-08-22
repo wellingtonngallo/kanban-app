@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         (await user.getIdTokenResult()).token,
       );
 
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       toast({
         title: "Falha ao autenticar",
