@@ -14,9 +14,9 @@ import {
   writeBatch,
   arrayUnion,
 } from "firebase/firestore";
-import { type BoardsProps } from "../interfaces/IBoard";
+import { type BoardsRequest } from "../interfaces/IBoard";
 import { db } from "../config/firebaseConfig";
-import { type TasksProps } from "../interfaces/ITasks";
+import { type TasksRequest } from "../interfaces/ITasks";
 import { useToast } from "@chakra-ui/react";
 
 type OnDropCurrentItemProps = {
@@ -24,9 +24,9 @@ type OnDropCurrentItemProps = {
   listIndex: number;
 };
 export type BoardContextData = {
-  boards: BoardsProps[];
+  boards: BoardsRequest[];
   isLoading: boolean;
-  setBoards: (boards: BoardsProps[]) => void;
+  setBoards: (boards: BoardsRequest[]) => void;
   onDrop: (items: OnDropCurrentItemProps, targetBoardIndex: number) => void;
 };
 
@@ -40,7 +40,7 @@ export const BoardProvider = ({
   children,
 }: BoardProviderProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const [boards, setBoards] = useState<BoardsProps[]>([]);
+  const [boards, setBoards] = useState<BoardsRequest[]>([]);
 
   const toast = useToast();
 
@@ -49,12 +49,12 @@ export const BoardProvider = ({
 
     try {
       const data = await getDocs(collection(db, "boards"));
-      const boards: BoardsProps[] = [];
+      const boards: BoardsRequest[] = [];
 
       for (const boardDoc of data.docs) {
         const board = boardDoc.data();
         const tasksRefs = board.tasks;
-        const tasksData: TasksProps[] = [];
+        const tasksData: TasksRequest[] = [];
         const idDocumentBoad = boardDoc.id;
 
         if (tasksRefs) {
@@ -63,14 +63,14 @@ export const BoardProvider = ({
 
             if (taskSnapshot.exists()) {
               const documentTaskId = taskSnapshot.id;
-              const taskData = taskSnapshot.data() as TasksProps;
+              const taskData = taskSnapshot.data() as TasksRequest;
 
               const teste = {
                 ...taskData,
                 id: documentTaskId,
               };
 
-              tasksData.push(teste as TasksProps);
+              tasksData.push(teste as TasksRequest);
             }
           }
         }
@@ -79,7 +79,7 @@ export const BoardProvider = ({
           ...board,
           id: idDocumentBoad,
           tasks: tasksData,
-        } as unknown as BoardsProps);
+        } as unknown as BoardsRequest);
       }
 
       setBoards(boards);
@@ -88,7 +88,7 @@ export const BoardProvider = ({
         title: "Falha ao buscar os quadros",
         description: "Houve um erro ao tentar buscar os dados. Tente novamente",
         status: "error",
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
         position: "top",
       });
@@ -124,9 +124,9 @@ export const BoardProvider = ({
   };
 
   const saveUpdateBoards = async (
-    boards: BoardsProps[],
-    taskToMove: TasksProps,
-    oldBoard: BoardsProps,
+    boards: BoardsRequest[],
+    taskToMove: TasksRequest,
+    oldBoard: BoardsRequest,
   ): Promise<void> => {
     try {
       const boardsCollection = collection(db, "boards");
@@ -161,7 +161,7 @@ export const BoardProvider = ({
         description:
           "Houve um erro ao tentar atualizar os dados. Tente novamente",
         status: "error",
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
         position: "top",
       });

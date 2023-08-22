@@ -1,6 +1,7 @@
 import { type RefObject, useRef } from "react";
 import { useDrag, useDrop, type XYCoord } from "react-dnd";
 import { useBoard } from "./useBoard";
+import { useAuth } from "./useAuth";
 
 type UseCardDragAndDropReturnType = {
   ref: RefObject<HTMLDivElement>;
@@ -16,12 +17,15 @@ export const useCardDragAndDrop = (
   index: number,
   listIndex: number,
   id: string,
+  isTaskBlocked: boolean,
+  uidAuthor: string,
 ): UseCardDragAndDropReturnType => {
   const { onDrop } = useBoard();
+  const { user } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
 
   const [{ isDragging }, dragRef] = useDrag({
-    item: { index, listIndex, id },
+    item: { index, listIndex, id, isTaskBlocked, uidAuthor },
     type: "TASK",
     collect: monitor => ({
       isDragging: monitor.isDragging(),
@@ -36,6 +40,8 @@ export const useCardDragAndDrop = (
 
       const draggedIndex = item.index;
       const targetIndex = index;
+
+      if (isTaskBlocked && user.uid !== uidAuthor) return;
 
       if (
         draggedIndex === targetIndex &&

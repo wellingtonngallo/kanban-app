@@ -1,29 +1,70 @@
-import { Box, Flex, IconButton, useToast } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { type TasksProps } from "../../interfaces/ITasks";
+import React, { useEffect, useState, useCallback } from "react";
+import { Box, Flex, IconButton, Tooltip, useToast } from "@chakra-ui/react";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { type TaskProps } from "../../interfaces/ITasks";
 import { CardDetailsModal } from "../CardDetailsModal";
 import { useCardDragAndDrop } from "../../hooks/useCardDragAndDrop";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { useBoard } from "../../hooks/useBoard";
-import { type BoardsProps } from "../../interfaces/IBoard";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { type BoardsRequest } from "../../interfaces/IBoard";
+
+type AuthorProps = {
+  displayName: string;
+  photoUrl: string;
+  uid: string;
+};
 
 export const Task = ({
-  id,
+  taskId,
   name,
   author,
   description,
-  index,
-
-  listIndex,
-}: TasksProps): JSX.Element => {
+  taskPositionArray,
+  currentPositionBoardWhereTaskIs,
+  isBlocked,
+}: TaskProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [openModalDetails, setOpenModalDetails] = useState(false);
-
-  const { ref, isDragging } = useCardDragAndDrop(index, listIndex, id);
+  const [authorInfo, setAuthorInfo] = useState<AuthorProps>({} as AuthorProps);
+  const { ref, isDragging } = useCardDragAndDrop(
+    taskPositionArray,
+    currentPositionBoardWhereTaskIs,
+    taskId,
+    isBlocked,
+    authorInfo.uid,
+  );
   const { setBoards } = useBoard();
   const toast = useToast();
+
+  const getInfoAuthor = useCallback(async (): Promise<void> => {
+    try {
+      const getDataAuthor = await getDoc(author);
+      if (getDataAuthor.exists()) {
+        const authorData = getDataAuthor.data();
+        const formattedAuthorData = {
+          displayName: authorData.displayName,
+          photoUrl: authorData.photoUrl,
+          uid: authorData.uid,
+        };
+
+        setAuthorInfo(formattedAuthorData);
+      }
+    } catch (e) {
+      toast({
+        title: "Erro",
+        description: "Houve um erro ao buscar os dados do autor da tarefa!",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, [author, toast]);
+
+  useEffect(() => {
+    getInfoAuthor();
+  }, [getInfoAuthor]);
 
   const openModal = (): void => {
     setOpenModalDetails(true);
@@ -37,8 +78,8 @@ export const Task = ({
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      setBoards((prevBoards: BoardsProps[]) => {
-        const updatedBoards = prevBoards.map((prevBoard: BoardsProps) => {
+      setBoards((prevBoards: BoardsRequest[]) => {
+        const updatedBoards = prevBoards.map((prevBoard: BoardsRequest) => {
           const newTasks = prevBoard.tasks.filter(item => item.id !== id);
 
           return {
@@ -54,7 +95,7 @@ export const Task = ({
         title: "Sucesso",
         description: "Tarefa removida com sucesso!",
         status: "success",
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
         position: "top",
       });
@@ -63,7 +104,7 @@ export const Task = ({
         title: "Erro",
         description: "Houve um erro ao tentar remover uma tarefa!",
         status: "error",
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
         position: "top",
       });
@@ -72,57 +113,70 @@ export const Task = ({
 
   return (
     <>
-      <Flex
-        key={name}
-        ref={ref}
-        opacity={isDragging ? "0.5" : ""}
-        cursor="grabbing"
-        borderWidth="1px"
-        borderRadius="lg"
-        p={"1rem"}
-        justifyContent="space-between"
-        gap="0.5rem"
+      <Tooltip
+        label={
+          isBlocked ? "O item só pode ser movido ou alterado pelo autor" : ""
+        }
       >
-        <Box>
-          <Box
-            mt="1"
-            fontWeight="semibold"
-            as="h4"
-            lineHeight="tight"
-            noOfLines={1}
-          >
-            {name}
+        <Flex
+          key={name}
+          ref={ref}
+          opacity={isDragging || isBlocked ? "0.5" : ""}
+          cursor="grabbing"
+          borderWidth="1px"
+          borderRadius="lg"
+          p={"1rem"}
+          justifyContent="space-between"
+          gap="0.5rem"
+        >
+          <Box>
+            <Box
+              mt="1"
+              fontWeight="semibold"
+              as="h4"
+              lineHeight="tight"
+              noOfLines={1}
+            >
+              {name}
+            </Box>
+            <Box as="span" color="gray.600" fontSize="sm" noOfLines={2}>
+              {description}
+            </Box>
           </Box>
-          <Box as="span" color="gray.600" fontSize="sm" noOfLines={2}>
-            {description}
-          </Box>
-        </Box>
-        <Flex gap="0.5rem" alignItems="center">
-          <IconButton
-            colorScheme="gray"
-            aria-label="Deleta tarefa"
-            size="md"
-            icon={<MdEdit />}
-            onClick={() => {
-              openModal();
-            }}
-          />
-          <IconButton
-            colorScheme="gray"
-            aria-label="Deleta tarefa"
-            size="md"
-            icon={<MdDelete />}
-            isLoading={isLoading}
-            onClick={() => {
-              removeTask(id);
-            }}
-          />
+          <Flex gap="0.5rem" alignItems="center">
+            <Tooltip label={"Editar tarefa"}>
+              <IconButton
+                colorScheme="gray"
+                aria-label="Deleta tarefa"
+                size="md"
+                icon={<MdEdit />}
+                isDisabled={isBlocked}
+                onClick={() => {
+                  openModal();
+                }}
+              />
+            </Tooltip>
+            <Tooltip label={"Excluir tarefa"}>
+              <IconButton
+                colorScheme="gray"
+                aria-label="Deleta tarefa"
+                size="md"
+                icon={<MdDelete />}
+                isLoading={isLoading}
+                isDisabled={isBlocked}
+                onClick={() => {
+                  removeTask(taskId);
+                }}
+              />
+            </Tooltip>
+          </Flex>
         </Flex>
-      </Flex>
+      </Tooltip>
       <CardDetailsModal
         isOpen={openModalDetails}
         handleModal={setOpenModalDetails}
-        task={{ name, description, author, id } as TasksProps}
+        task={{ name, description, taskId, isBlocked } as TaskProps}
+        authorInfo={authorInfo}
       />
     </>
   );

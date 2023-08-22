@@ -1,8 +1,8 @@
-import { type TasksProps } from "./ITasks";
+import { type TasksRequest } from "./ITasks";
 
-export type BoardsProps = {
+export type BoardsRequest = {
   id: string;
   name: string;
-  tasks: TasksProps[];
+  tasks: TasksRequest[];
   boardIndex: number;
 };

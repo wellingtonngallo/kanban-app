@@ -9,7 +9,7 @@ import {
   Heading,
   IconButton,
 } from "@chakra-ui/react";
-import { type BoardsProps } from "../../interfaces/IBoard";
+import { type BoardsRequest } from "../../interfaces/IBoard";
 import { Task } from "../Task";
 import { useBoardDrop } from "../../hooks/useBoardDrop";
 import { CreateTaskModal } from "../CreateTaskModal";
@@ -19,7 +19,7 @@ export const Board = ({
   boardIndex,
   name,
   tasks,
-}: BoardsProps): JSX.Element => {
+}: BoardsRequest): JSX.Element => {
   const [openModalCreateTask, setOpenModalCreateTask] = useState(false);
   const { dropRef } = useBoardDrop(boardIndex);
 
@@ -45,12 +45,13 @@ export const Board = ({
             return (
               <Box mt="0.5rem" key={task.id}>
                 <Task
-                  id={task.id}
-                  index={index}
-                  description={task.description}
-                  listIndex={boardIndex}
+                  taskId={task.id}
+                  taskPositionArray={index}
+                  currentPositionBoardWhereTaskIs={boardIndex}
                   name={task.name}
                   author={task.author}
+                  isBlocked={task.blocked}
+                  description={task.description}
                 />
               </Box>
             );

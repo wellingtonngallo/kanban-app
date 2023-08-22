@@ -12,14 +12,16 @@ import {
   type User,
 } from "firebase/auth";
 import { setCookie, destroyCookie } from "nookies";
-import { auth } from "../config/firebaseConfig";
+import { auth, db } from "../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
+import { doc, setDoc } from "firebase/firestore";
 
 type UserProps = {
   displayName: string | null;
   email: string | null;
   photoUrl: string | null;
+  uid: string;
 };
 
 export type AuthContextData = {
@@ -42,18 +44,19 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   useEffect(() => {
     onAuthStateChanged(auth, async user => {
       if (user) {
-        setUser(await formattedUserData(user));
+        setUser(formattedUserData(user));
       } else {
         destroyCookie(undefined, "kanbanapp.token");
       }
     });
   }, []);
 
-  const formattedUserData = async (user: User): Promise<UserProps> => {
+  const formattedUserData = (user: User): UserProps => {
     return {
       displayName: user.displayName,
       email: user.email,
       photoUrl: user.photoURL,
+      uid: user.uid,
     };
   };
 
@@ -62,8 +65,13 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 
     try {
       const { user } = await signInWithPopup(auth, provider);
+      const dataUser = formattedUserData(user);
 
-      setUser(await formattedUserData(user));
+      if (dataUser?.uid) {
+        await setDoc(doc(db, "users", dataUser.uid), dataUser);
+        setUser(formattedUserData(user));
+      }
+
       setCookie(
         undefined,
         "kanbanapp.token",
@@ -77,7 +85,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         description:
           "Houve um erro ao tentar autenticar o usuário. Tente novamente",
         status: "error",
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
         position: "top",
       });
