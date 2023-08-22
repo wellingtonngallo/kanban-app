@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "target": "ESNext",
     "module": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "skipLibCheck": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -18,6 +18,6 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "include": ["src", ".eslintrc.cjs", "vite.config.ts"],
+  "include": ["src", ".eslintrc.cjs", "vite.config.ts", "jest.config.ts", "babel.config.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,11 +1,21 @@
 import React, { type ChangeEvent } from "react";
-import { Flex, Image, Input, Text, Heading } from "@chakra-ui/react";
-
+import {
+  Flex,
+  Image,
+  Input,
+  Text,
+  Heading,
+  IconButton,
+} from "@chakra-ui/react";
+import { destroyCookie } from "nookies";
+import { MdLogout } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import { DarkModeButton } from "../DarkModeButton";
 import { useSearch } from "../../hooks/useSearch";
+import { useNavigate } from "react-router-dom";
 
 export const Header = (): JSX.Element => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { setSearchTask } = useSearch();
 
@@ -21,9 +31,9 @@ export const Header = (): JSX.Element => {
       maxWidth={1480}
       h="20"
       mx="auto"
+      mt="4"
       align="center"
       px="6"
-      boxShadow="var(--chakra-shadows-sm)"
     >
       <Flex
         justifyContent="space-between"
@@ -43,6 +53,16 @@ export const Header = (): JSX.Element => {
             fallbackSrc="https://via.placeholder.com/40"
           />
           <DarkModeButton top={0} right={2} />
+          <IconButton
+            colorScheme="gray"
+            aria-label="Call Segun"
+            size="md"
+            icon={<MdLogout />}
+            onClick={() => {
+              destroyCookie(undefined, "kanbanapp.token");
+              navigate("/");
+            }}
+          />
         </Flex>
       </Flex>
     </Flex>

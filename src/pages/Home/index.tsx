@@ -21,7 +21,7 @@ export const Home = (): JSX.Element => {
   });
 
   return (
-    <Container maxWidth="100%" h="calc(100vh - 80px)" px={4} py={10}>
+    <Container maxWidth={1480} h="calc(100vh - 80px)" px={4} py={10}>
       {isLoading ? (
         <Center h="calc(100vh - 120px)">
           <Spinner size="xl" />
