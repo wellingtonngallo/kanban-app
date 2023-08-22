@@ -1,6 +1,10 @@
 
 # Kanban APP
 
+## Demo do projeto
+
+https://kanban-app-5a82a.firebaseapp.com/
+
 ## Rodando localmente
 
 Clone o projeto
