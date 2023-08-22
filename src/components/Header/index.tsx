@@ -1,11 +1,18 @@
-import React from "react";
+import React, { type ChangeEvent } from "react";
 import { Flex, Image, Input, Text, Heading } from "@chakra-ui/react";
 
 import { useAuth } from "../../hooks/useAuth";
 import { DarkModeButton } from "../DarkModeButton";
+import { useSearch } from "../../hooks/useSearch";
 
 export const Header = (): JSX.Element => {
   const { user } = useAuth();
+  const { setSearchTask } = useSearch();
+
+  const findTask = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value.toLowerCase();
+    setSearchTask(value);
+  };
 
   return (
     <Flex
@@ -26,7 +33,7 @@ export const Header = (): JSX.Element => {
       >
         <Heading>Kanban APP</Heading>
         <Flex alignItems="center" gap="1rem">
-          <Input placeholder="Buscar tarefa" width={400} />
+          <Input placeholder="Buscar tarefa" width={400} onChange={findTask} />
           <Text>{user.displayName}</Text>
           <Image
             src={user?.photoUrl ?? ""}

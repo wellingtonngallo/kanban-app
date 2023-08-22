@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { BoardProvider } from "./context/BoardContext";
+import { SearchProvider } from "./context/SearchContext";
 
 function App(): JSX.Element {
   return (
@@ -15,7 +16,9 @@ function App(): JSX.Element {
         <DndProvider backend={HTML5Backend}>
           <AuthProvider>
             <BoardProvider>
-              <AppRoutes />
+              <SearchProvider>
+                <AppRoutes />
+              </SearchProvider>
             </BoardProvider>
           </AuthProvider>
         </DndProvider>

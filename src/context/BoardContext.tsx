@@ -65,12 +65,12 @@ export const BoardProvider = ({
               const documentTaskId = taskSnapshot.id;
               const taskData = taskSnapshot.data() as TasksRequest;
 
-              const teste = {
+              const task = {
                 ...taskData,
                 id: documentTaskId,
               };
 
-              tasksData.push(teste as TasksRequest);
+              tasksData.push(task as TasksRequest);
             }
           }
         }
