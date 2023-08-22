@@ -26,12 +26,13 @@ import { Input } from "../Input";
 import { TextArea } from "../TextArea";
 import { useBoard } from "../../hooks/useBoard";
 import { useAuth } from "../../hooks/useAuth";
+import { type AuthorProps } from "../../interfaces/IAuthor";
 
 type CardDetailsModalProps = {
   handleModal: (isOpen: boolean) => void;
   isOpen: boolean;
   task: TaskProps;
-  authorInfo: any;
+  authorInfo: AuthorProps;
 };
 
 export const CardDetailsModal = ({
@@ -42,7 +43,6 @@ export const CardDetailsModal = ({
 }: CardDetailsModalProps): JSX.Element => {
   const { taskId, isBlocked } = task;
   const { setBoards } = useBoard();
-
   const { user } = useAuth();
   const toast = useToast();
 

@@ -8,12 +8,7 @@ import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { useBoard } from "../../hooks/useBoard";
 import { type BoardsRequest } from "../../interfaces/IBoard";
-
-type AuthorProps = {
-  displayName: string;
-  photoUrl: string;
-  uid: string;
-};
+import { type AuthorProps } from "../../interfaces/IAuthor";
 
 export const Task = ({
   taskId,
