@@ -45,7 +45,7 @@ export const Board = ({
             return (
               <Box mt="0.5rem" key={task.id}>
                 <Task
-                  taskId={task.id}
+                  id={task.id}
                   taskPositionArray={index}
                   currentPositionBoardWhereTaskIs={boardIndex}
                   name={task.name}

@@ -11,7 +11,7 @@ export type TasksRequest = {
 };
 
 export type TaskProps = {
-  taskId: string;
+  id: string;
   taskPositionArray: number;
   currentPositionBoardWhereTaskIs: number;
   name: string;

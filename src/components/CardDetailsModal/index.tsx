@@ -41,7 +41,7 @@ export const CardDetailsModal = ({
   task,
   authorInfo,
 }: CardDetailsModalProps): JSX.Element => {
-  const { taskId, isBlocked } = task;
+  const { id, isBlocked } = task;
   const { setBoards } = useBoard();
   const { user } = useAuth();
   const toast = useToast();
@@ -65,22 +65,23 @@ export const CardDetailsModal = ({
     data: TasksRequest,
   ): Promise<void> => {
     try {
-      const boardRef = doc(db, "tasks", taskId);
+      const taskRef = doc(db, "tasks", id);
       const userRef = doc(db, "users", authorInfo.uid);
+
       const newData = {
         ...data,
         author: userRef,
+        id,
       };
 
-      console.log(newData);
-      await updateDoc(boardRef, newData);
+      await updateDoc(taskRef, newData);
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       setBoards((prevBoards: BoardsRequest[]) => {
         const updatedBoards = prevBoards.map((prevBoard: BoardsRequest) => {
           const newTasks = prevBoard.tasks.map(item => {
-            if (item.id === taskId) {
+            if (item.id === id) {
               return newData;
             }
 

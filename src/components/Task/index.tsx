@@ -12,7 +12,7 @@ import { type AuthorProps } from "../../interfaces/IAuthor";
 import { useAuth } from "../../hooks/useAuth";
 
 export const Task = ({
-  taskId,
+  id,
   name,
   author,
   description,
@@ -26,7 +26,7 @@ export const Task = ({
   const { ref, isDragging } = useCardDragAndDrop(
     taskPositionArray,
     currentPositionBoardWhereTaskIs,
-    taskId,
+    id,
     isBlocked,
     authorInfo.uid,
   );
@@ -168,7 +168,7 @@ export const Task = ({
                 isLoading={isLoading}
                 isDisabled={isBlocked && authorInfo.uid !== user.uid}
                 onClick={() => {
-                  removeTask(taskId);
+                  removeTask(id);
                 }}
               />
             </Tooltip>
@@ -178,7 +178,7 @@ export const Task = ({
       <CardDetailsModal
         isOpen={openModalDetails}
         handleModal={setOpenModalDetails}
-        task={{ name, description, taskId, isBlocked } as TaskProps}
+        task={{ name, description, id, isBlocked } as TaskProps}
         authorInfo={authorInfo}
       />
     </>

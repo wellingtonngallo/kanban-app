@@ -25,7 +25,7 @@ describe("tests CardDetailsModal", () => {
       <CardDetailsModal
         handleModal={mockHandleModal}
         isOpen={true}
-        task={{ taskId: "task-id", isBlocked: false } as TaskProps}
+        task={{ id: "task-id", isBlocked: false } as TaskProps}
         authorInfo={{
           uid: "author-uid",
           displayName: "Gallo",
@@ -46,7 +46,7 @@ describe("tests CardDetailsModal", () => {
       <CardDetailsModal
         handleModal={mockHandleModal}
         isOpen={true}
-        task={{ taskId: "task-id", isBlocked: false } as TaskProps}
+        task={{ id: "task-id", isBlocked: false } as TaskProps}
         authorInfo={{
           uid: "author-uid",
           displayName: "Gallo",
