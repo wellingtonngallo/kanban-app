@@ -8,12 +8,17 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from "@chakra-ui/react";
+import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect } from "react";
-import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { db } from "../../config/firebaseConfig";
+import { type BoardsProps } from "../../interfaces/IBoard";
 import { type TasksProps } from "../../interfaces/ITasks";
 import { Input } from "../Input";
 import { TextArea } from "../TextArea";
+import { useBoard } from "../../hooks/useBoard";
 
 type CardDetailsModalProps = {
   handleModal: (isOpen: boolean) => void;
@@ -25,7 +30,15 @@ export const CardDetailsModal = ({
   isOpen,
   task,
 }: CardDetailsModalProps): JSX.Element => {
-  const { handleSubmit, register, reset } = useForm<TasksProps>();
+  const { setBoards } = useBoard();
+  const toast = useToast();
+
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<TasksProps>();
   const closeModal = (): void => {
     handleModal(false);
   };
@@ -34,8 +47,59 @@ export const CardDetailsModal = ({
     reset(task);
   }, [reset, task]);
 
-  const onSubmit: SubmitHandler<TasksProps> = (data: FieldValues): void => {
-    console.log(data);
+  const onSubmit: SubmitHandler<TasksProps> = async (
+    data: TasksProps,
+  ): Promise<void> => {
+    try {
+      const boardRef = doc(db, "tasks", task.id);
+
+      const newData = {
+        ...data,
+        author: "Gallo",
+      };
+      await updateDoc(boardRef, newData);
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      setBoards((prevBoards: BoardsProps[]) => {
+        const updatedBoards = prevBoards.map((prevBoard: BoardsProps) => {
+          const newTasks = prevBoard.tasks.map(item => {
+            if (item.id === task.id) {
+              return data;
+            }
+
+            return item;
+          });
+
+          return {
+            ...prevBoard,
+            tasks: newTasks,
+          };
+        });
+
+        return updatedBoards;
+      });
+
+      reset();
+      closeModal();
+      toast({
+        title: "Sucesso",
+        description: "Tarefa atualizada com sucesso!",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch {
+      toast({
+        title: "Erro",
+        description: "Houve um erro ao tentar atualizar uma tarefa!",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top",
+      });
+    }
   };
 
   return (
@@ -64,7 +128,9 @@ export const CardDetailsModal = ({
             <Button type="button" onClick={closeModal} variant="outline">
               Fechar
             </Button>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit" isLoading={isSubmitting}>
+              Salvar
+            </Button>
           </ModalFooter>
         </form>
       </ModalContent>

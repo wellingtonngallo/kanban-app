@@ -6,7 +6,14 @@ import React, {
   type ReactNode,
 } from "react";
 
-import { collection, getDocs, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  writeBatch,
+  arrayUnion,
+} from "firebase/firestore";
 import { type BoardsProps } from "../interfaces/IBoard";
 import { db } from "../config/firebaseConfig";
 import { type TasksProps } from "../interfaces/ITasks";
@@ -48,19 +55,29 @@ export const BoardProvider = ({
         const board = boardDoc.data();
         const tasksRefs = board.tasks;
         const tasksData: TasksProps[] = [];
+        const idDocumentBoad = boardDoc.id;
 
         if (tasksRefs) {
           for (const taskRef of tasksRefs) {
             const taskSnapshot = await getDoc(taskRef);
 
             if (taskSnapshot.exists()) {
-              tasksData.push(taskSnapshot.data() as TasksProps);
+              const documentTaskId = taskSnapshot.id;
+              const taskData = taskSnapshot.data() as TasksProps;
+
+              const teste = {
+                ...taskData,
+                id: documentTaskId,
+              };
+
+              tasksData.push(teste as TasksProps);
             }
           }
         }
 
         boards.push({
           ...board,
+          id: idDocumentBoad,
           tasks: tasksData,
         } as unknown as BoardsProps);
       }
@@ -101,7 +118,53 @@ export const BoardProvider = ({
 
       const updatedBoards = [...boards];
 
+      void saveUpdateBoards(updatedBoards, taskToMove, currentBoard);
       setBoards(updatedBoards);
+    }
+  };
+
+  const saveUpdateBoards = async (
+    boards: BoardsProps[],
+    taskToMove: TasksProps,
+    oldBoard: BoardsProps,
+  ): Promise<void> => {
+    try {
+      const boardsCollection = collection(db, "boards");
+      const batch = writeBatch(db);
+
+      for (const updatedBoard of boards) {
+        const boardRef = doc(boardsCollection, updatedBoard.id);
+
+        const taskReferencesToAdd = updatedBoard.tasks.map(task =>
+          doc(db, "tasks", task.id),
+        );
+
+        if (updatedBoard.id === oldBoard.id) {
+          const updatedTaskReferences = updatedBoard.tasks
+            .filter(task => task.id !== taskToMove.id)
+            .map(task => doc(db, "tasks", task.id));
+
+          batch.update(boardRef, {
+            tasks: updatedTaskReferences,
+          });
+        } else {
+          batch.update(boardRef, {
+            tasks: arrayUnion(...taskReferencesToAdd),
+          });
+        }
+      }
+
+      await batch.commit();
+    } catch (e) {
+      toast({
+        title: "Falha ao atualizar os quadros",
+        description:
+          "Houve um erro ao tentar atualizar os dados. Tente novamente",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 
